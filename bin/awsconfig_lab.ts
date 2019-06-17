@@ -4,4 +4,4 @@ import cdk = require('@aws-cdk/cdk');
 import { AwsconfigLabStack } from '../lib/awsconfig_lab-stack';
 
 const app = new cdk.App();
-new AwsconfigLabStack(app, 'AwsconfigLabStack');
+const a = new AwsconfigLabStack(app, 'AwsconfigLabStack');

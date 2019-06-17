@@ -1,34 +1,28 @@
 import cdk = require('@aws-cdk/cdk');
-import rds = require('@aws-cdk/aws-rds');
-import ec2 = require('@aws-cdk/aws-ec2')
+import autoscaling = require('@aws-cdk/aws-autoscaling');
+import ec2 = require('@aws-cdk/aws-ec2');
+import elb = require('@aws-cdk/aws-elasticloadbalancing');
+import s3 = require('@aws-cdk/aws-s3');
+import {s3bucket} from './awsconfig_lab-s3-stack';
+import {ec2fleet} from './awsconfig_lab-ec2-stack';
 
 export class AwsconfigLabStack extends cdk.Stack {
+
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     // The code that defines your stack goes here
+    
+    
+    const bucket1 = new s3bucket(this,'configbucket1');
 
-    const aurora = new rds.CfnDBCluster(this, 'myaurora', 
-    {
-      engine: "aurora",
-      snapshotIdentifier: "arn:aws:rds:us-east-1:334387515186:cluster-snapshot:awsconfiglabstack-snapshot-awsconfiglabstack-myaurora-zigr0xn99u4h-19shh48gf5sn7"
-    });
-    const instance = new rds.CfnDBInstance(this, 'myaurora-instance',
-    {
-      dbInstanceClass: "db.r3.xlarge",
-      engine: "aurora",
-      dbClusterIdentifier: aurora.dbClusterName
-    });
-
-    const vpc = new ec2.Vpc(this, 'vpc');
-
-    const postgres = new rds.DatabaseInstanceFromSnapshot(this, 'mypostgres',  
-    { 
-      snapshotIdentifier: "arn:aws:rds:us-east-1:334387515186:snapshot:testposgres",
-      engine: rds.DatabaseInstanceEngine.Postgres,
-      instanceClass: new ec2.InstanceType("r3.xlarge"),
-      vpc: vpc
-    });
-
+    //const bucket2 = new s3bucket(this, 'configbucket2')
+    
+    const ec2 = new ec2fleet(this, 'ec2fleet');
+    
+    
+    
+    
+    
   }
 }

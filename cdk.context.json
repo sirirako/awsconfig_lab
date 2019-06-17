@@ -6,5 +6,6 @@
     "us-east-1d",
     "us-east-1e",
     "us-east-1f"
-  ]
+  ],
+  "ssm:account=334387515186:parameterName=/aws/service/ami-amazon-linux-latest/amzn-ami-hvm-x86_64-gp2:region=us-east-1": "ami-0756fbca465a59a30"
 }
