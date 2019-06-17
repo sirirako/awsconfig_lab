@@ -11,7 +11,7 @@ In this session learn how to build a solution that will continuously evaluate yo
 > In this section, we will create AWS resources uses for this session
 > Cloud Formation is 
 1. Go to CloudFormation Console, and click Create stack. For **Prerequisite - Preapare template**, select *Template is ready*.
-2. Download the template from ![here](https://raw.githubusercontent.com/sirirako/awsconfig_lab/master/templates/awsconfig_lab.json) to your machine.
+2. Download the template from [here](../raw/master/templates/awsconfig_lab.json) to your machine.
 3. Under Specify template, select *Upload a template file* and click *Choose file* button and select the Cloud Formation template downloaded from the previous step.
 
 
