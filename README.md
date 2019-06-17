@@ -47,11 +47,11 @@ In this session learn how to build a solution that will continuously evaluate yo
 7. Return to AWS Config console, *s3-bucket-public-read-prohibited* Rule then click **Re-evaluate**. 
 8. Select S3 bucket resource. Click **Configuration timeline** to see the configuration change history. Click **Compliance timeline** to see the Compliance history for this resource. 
 
-![alt AWS Config Rule](../images/awsconfig_s3bucket.png)
+![AWS Config Rule](../master/images/awsconfig_s3bucket.png)
 
-![alt Configuration Timeline](../images/awsconfig_configtimeline.png)
+![Configuration Timeline](../master/images/awsconfig_configtimeline.png)
 
-![alt Compliance Timeline](../images/awsconfig_compliancetimeline.png)
+![Compliance Timeline](../master/images/awsconfig_compliancetimeline.png)
 
    Let's prevent Public Acess Configuration
 
