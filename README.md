@@ -116,12 +116,12 @@ In this session learn how to build a solution that will continuously evaluate yo
 6. Under Targets, select *Lambda function* in the first dropdown. For **Function** name, search for *"AWSConfgLab"* and choose function name. This function was created with the Cloudformation in the earlier step. Click **Configure Detail**
 
 
-![CloudWatch Event](../images/awsconfig_CWEvent.png)
+![CloudWatch Event](../master/images/awsconfig_CWEvent.png)
 
 7. Under **Step 2 : Configure rule details**, Rule definition, enter the rule name. Click Create rule.
 8. Go to AWS Lambda Console, search and select the Lambda function in the earlier step. You can see that this function is triggered by CloudWatch Events.
 
-![CloudWatch Event](../images/awsconfig_Lambda.png)
+![CloudWatch Event](../master/images/awsconfig_Lambda.png)
 
 9. Go to AWS Config Console and click s3-bucket-public-write-prohibited rule. Click **Re-evaluate** button to manually trigger the rule. 
 

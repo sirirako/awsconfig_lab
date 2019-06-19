@@ -1,0 +1,641 @@
+Resources:
+  configbucket1Bucket1D0A3AE24:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/configbucket1/Bucket1/Resource
+  configbucket1Bucket1Policy1830F920:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: configbucket1Bucket1D0A3AE24
+      PolicyDocument:
+        Statement:
+          - Action: s3:GetObject
+            Condition:
+              IpAddress:
+                aws:SourceIp: 54.240.143.0/24
+            Effect: Allow
+            Principal: "*"
+            Resource:
+              Fn::Join:
+                - ""
+                - - Fn::GetAtt:
+                      - configbucket1Bucket1D0A3AE24
+                      - Arn
+                  - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/configbucket1/Bucket1/Policy/Resource
+  configbucket1Bucket2CA1D38F2:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/configbucket1/Bucket2/Resource
+  configbucket1Bucket2PolicyEBC897B2:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: configbucket1Bucket2CA1D38F2
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Principal: "*"
+            Resource:
+              - Fn::GetAtt:
+                  - configbucket1Bucket2CA1D38F2
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - configbucket1Bucket2CA1D38F2
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/configbucket1/Bucket2/Policy/Resource
+  ec2fleetVPCE156DA50:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      InstanceTenancy: default
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/Resource
+  ec2fleetVPCPublicSubnet1Subnet635F37F6:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/18
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1/Subnet
+  ec2fleetVPCPublicSubnet1RouteTableE9AA9928:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1/RouteTable
+  ec2fleetVPCPublicSubnet1RouteTableAssociation7D7FD919:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: ec2fleetVPCPublicSubnet1RouteTableE9AA9928
+      SubnetId:
+        Ref: ec2fleetVPCPublicSubnet1Subnet635F37F6
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1/RouteTableAssociation
+  ec2fleetVPCPublicSubnet1DefaultRoute58419CBE:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: ec2fleetVPCPublicSubnet1RouteTableE9AA9928
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: ec2fleetVPCIGWC872BDC1
+    DependsOn:
+      - ec2fleetVPCVPCGW28260A21
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1/DefaultRoute
+  ec2fleetVPCPublicSubnet1EIP8A733B5B:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1/EIP
+  ec2fleetVPCPublicSubnet1NATGatewayF34E9971:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - ec2fleetVPCPublicSubnet1EIP8A733B5B
+          - AllocationId
+      SubnetId:
+        Ref: ec2fleetVPCPublicSubnet1Subnet635F37F6
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet1/NATGateway
+  ec2fleetVPCPublicSubnet2SubnetCE6D0665:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.64.0/18
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2
+        - Key: aws-cdk:subnet-name
+          Value: Public
+        - Key: aws-cdk:subnet-type
+          Value: Public
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2/Subnet
+  ec2fleetVPCPublicSubnet2RouteTableE679479A:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2/RouteTable
+  ec2fleetVPCPublicSubnet2RouteTableAssociationE8468839:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: ec2fleetVPCPublicSubnet2RouteTableE679479A
+      SubnetId:
+        Ref: ec2fleetVPCPublicSubnet2SubnetCE6D0665
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2/RouteTableAssociation
+  ec2fleetVPCPublicSubnet2DefaultRoute6CC16377:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: ec2fleetVPCPublicSubnet2RouteTableE679479A
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: ec2fleetVPCIGWC872BDC1
+    DependsOn:
+      - ec2fleetVPCVPCGW28260A21
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2/DefaultRoute
+  ec2fleetVPCPublicSubnet2EIP9C542377:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2/EIP
+  ec2fleetVPCPublicSubnet2NATGateway429434BA:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId:
+        Fn::GetAtt:
+          - ec2fleetVPCPublicSubnet2EIP9C542377
+          - AllocationId
+      SubnetId:
+        Ref: ec2fleetVPCPublicSubnet2SubnetCE6D0665
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PublicSubnet2/NATGateway
+  ec2fleetVPCPrivateSubnet1Subnet59A18A7C:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.128.0/18
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet1
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet1/Subnet
+  ec2fleetVPCPrivateSubnet1RouteTable824E317B:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet1
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet1/RouteTable
+  ec2fleetVPCPrivateSubnet1RouteTableAssociation6312C238:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: ec2fleetVPCPrivateSubnet1RouteTable824E317B
+      SubnetId:
+        Ref: ec2fleetVPCPrivateSubnet1Subnet59A18A7C
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet1/RouteTableAssociation
+  ec2fleetVPCPrivateSubnet1DefaultRoute3CC65D8B:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: ec2fleetVPCPrivateSubnet1RouteTable824E317B
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: ec2fleetVPCPublicSubnet1NATGatewayF34E9971
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet1/DefaultRoute
+  ec2fleetVPCPrivateSubnet2SubnetE9870FA9:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.192.0/18
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      AvailabilityZone: us-east-1b
+      MapPublicIpOnLaunch: false
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet2
+        - Key: aws-cdk:subnet-name
+          Value: Private
+        - Key: aws-cdk:subnet-type
+          Value: Private
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet2/Subnet
+  ec2fleetVPCPrivateSubnet2RouteTableB325DA5F:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet2
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet2/RouteTable
+  ec2fleetVPCPrivateSubnet2RouteTableAssociation2A9C8E33:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: ec2fleetVPCPrivateSubnet2RouteTableB325DA5F
+      SubnetId:
+        Ref: ec2fleetVPCPrivateSubnet2SubnetE9870FA9
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet2/RouteTableAssociation
+  ec2fleetVPCPrivateSubnet2DefaultRouteE815AA31:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: ec2fleetVPCPrivateSubnet2RouteTableB325DA5F
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId:
+        Ref: ec2fleetVPCPublicSubnet2NATGateway429434BA
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/PrivateSubnet2/DefaultRoute
+  ec2fleetVPCIGWC872BDC1:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/VPC
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/IGW
+  ec2fleetVPCVPCGW28260A21:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+      InternetGatewayId:
+        Ref: ec2fleetVPCIGWC872BDC1
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/VPC/VPCGW
+  ec2fleetwebserverrole6B77FC62:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                Fn::Join:
+                  - ""
+                  - - ec2.
+                    - Ref: AWS::URLSuffix
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+      RoleName: awsconfig_lab_ec2_role
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/webserver_role/Resource
+  ec2fleetASGInstanceSecurityGroup485F9970:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: AwsconfigLabStack/ec2fleet/ASG/InstanceSecurityGroup
+      SecurityGroupEgress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow all outbound traffic by default
+          IpProtocol: "-1"
+      SecurityGroupIngress: []
+      Tags:
+        - Key: Name
+          Value: AwsconfigLabStack/ec2fleet/ASG
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/ASG/InstanceSecurityGroup/Resource
+  ec2fleetASGInstanceSecurityGroupfromAwsconfigLabStackec2fleetLBSecurityGroupB207AD7F807E603369:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      IpProtocol: tcp
+      Description: Load balancer to target
+      FromPort: 80
+      GroupId:
+        Fn::GetAtt:
+          - ec2fleetASGInstanceSecurityGroup485F9970
+          - GroupId
+      SourceSecurityGroupId:
+        Fn::GetAtt:
+          - ec2fleetLBSecurityGroup7CEC7CD4
+          - GroupId
+      ToPort: 80
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/ASG/InstanceSecurityGroup/from
+        AwsconfigLabStackec2fleetLBSecurityGroupB207AD7F:80
+  ec2fleetASGInstanceProfile7F15129C:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: ec2fleetwebserverrole6B77FC62
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/ASG/InstanceProfile
+  ec2fleetASGLaunchConfig56CB4ED9:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:
+      ImageId: ami-0756fbca465a59a30
+      InstanceType: t2.micro
+      IamInstanceProfile:
+        Ref: ec2fleetASGInstanceProfile7F15129C
+      SecurityGroups:
+        - Fn::GetAtt:
+            - ec2fleetASGInstanceSecurityGroup485F9970
+            - GroupId
+      UserData:
+        Fn::Base64: >-
+          #!/bin/bash
+
+          curl -sL https://rpm.nodesource.com/setup_8.x | bash - 
+
+          yum install -y nodejs 
+
+          npm install forever -g 
+
+          mkdir /home/ec2-user/node-website 
+
+          echo -e "var http = require('http');" &>> /home/ec2-user/node-website/app.js 
+
+          echo -e "http.createServer(function (req, res) {" &>> /home/ec2-user/node-website/app.js 
+
+          echo -e "res.writeHead(200, {'Content-Type': 'text/plain'});" &>> /home/ec2-user/node-website/app.js 
+
+          echo -e "res.end('Hello World!');" &>> /home/ec2-user/node-website/app.js 
+
+          echo -e "}).listen(80);" &>> /home/ec2-user/node-website/app.js 
+
+          export PORT=80
+
+          forever start /home/ec2-user/node-website/app.js
+    DependsOn:
+      - ec2fleetwebserverrole6B77FC62
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/ASG/LaunchConfig
+  ec2fleetASG37043298:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      MaxSize: "6"
+      MinSize: "3"
+      DesiredCapacity: "3"
+      LaunchConfigurationName:
+        Ref: ec2fleetASGLaunchConfig56CB4ED9
+      Tags:
+        - Key: Name
+          PropagateAtLaunch: true
+          Value: AwsconfigLabStack/ec2fleet/ASG
+      TargetGroupARNs:
+        - Ref: ec2fleetLBListenerTargetGroup0B38A5B6
+      VPCZoneIdentifier:
+        - Ref: ec2fleetVPCPrivateSubnet1Subnet59A18A7C
+        - Ref: ec2fleetVPCPrivateSubnet2SubnetE9870FA9
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        WaitOnResourceSignals: false
+        PauseTime: PT0S
+        SuspendProcesses:
+          - HealthCheck
+          - ReplaceUnhealthy
+          - AZRebalance
+          - AlarmNotification
+          - ScheduledActions
+      AutoScalingScheduledAction:
+        IgnoreUnmodifiedGroupSizeProperties: true
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/ASG/ASG
+  ec2fleetASGScalingPolicyAModestLoad08849C39:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AutoScalingGroupName:
+        Ref: ec2fleetASG37043298
+      PolicyType: TargetTrackingScaling
+      TargetTrackingConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ALBRequestCountPerTarget
+          ResourceLabel:
+            Fn::Join:
+              - ""
+              - - Fn::Select:
+                    - 1
+                    - Fn::Split:
+                        - /
+                        - Ref: ec2fleetLBListenerAC86F69A
+                - /
+                - Fn::Select:
+                    - 2
+                    - Fn::Split:
+                        - /
+                        - Ref: ec2fleetLBListenerAC86F69A
+                - /
+                - Fn::Select:
+                    - 3
+                    - Fn::Split:
+                        - /
+                        - Ref: ec2fleetLBListenerAC86F69A
+                - /
+                - Fn::GetAtt:
+                    - ec2fleetLBListenerTargetGroup0B38A5B6
+                    - TargetGroupFullName
+        TargetValue: 1
+    DependsOn:
+      - ec2fleetLBListenerAC86F69A
+      - ec2fleetLBListenerTargetGroup0B38A5B6
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/ASG/ScalingPolicyAModestLoad/Resource
+  ec2fleetLBB721F6BC:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      LoadBalancerAttributes: []
+      Scheme: internet-facing
+      SecurityGroups:
+        - Fn::GetAtt:
+            - ec2fleetLBSecurityGroup7CEC7CD4
+            - GroupId
+      Subnets:
+        - Ref: ec2fleetVPCPublicSubnet1Subnet635F37F6
+        - Ref: ec2fleetVPCPublicSubnet2SubnetCE6D0665
+      Type: application
+    DependsOn:
+      - ec2fleetVPCPublicSubnet1DefaultRoute58419CBE
+      - ec2fleetVPCPublicSubnet2DefaultRoute6CC16377
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/LB/Resource
+  ec2fleetLBSecurityGroup7CEC7CD4:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Automatically created Security Group for ELB
+        AwsconfigLabStackec2fleetLB23DC219C
+      SecurityGroupEgress: []
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          Description: Allow from anyone on port 80
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/LB/SecurityGroup/Resource
+  ec2fleetLBSecurityGrouptoAwsconfigLabStackec2fleetASGInstanceSecurityGroupF44A9FA9807A67D174:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      GroupId:
+        Fn::GetAtt:
+          - ec2fleetLBSecurityGroup7CEC7CD4
+          - GroupId
+      IpProtocol: tcp
+      Description: Load balancer to target
+      DestinationSecurityGroupId:
+        Fn::GetAtt:
+          - ec2fleetASGInstanceSecurityGroup485F9970
+          - GroupId
+      FromPort: 80
+      ToPort: 80
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/LB/SecurityGroup/to
+        AwsconfigLabStackec2fleetASGInstanceSecurityGroupF44A9FA9:80
+  ec2fleetLBListenerAC86F69A:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn:
+            Ref: ec2fleetLBListenerTargetGroup0B38A5B6
+          Type: forward
+      LoadBalancerArn:
+        Ref: ec2fleetLBB721F6BC
+      Port: 80
+      Protocol: HTTP
+      Certificates: []
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/LB/Listener/Resource
+  ec2fleetLBListenerTargetGroup0B38A5B6:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      TargetGroupAttributes: []
+      Targets: []
+      TargetType: instance
+      VpcId:
+        Ref: ec2fleetVPCE156DA50
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/ec2fleet/LB/Listener/TargetGroup/Resource
+  configlambdalambarole6B9C9D53:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                Fn::Join:
+                  - ""
+                  - - lambda.
+                    - Ref: AWS::URLSuffix
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      RoleName: awsconfig_lab_lambda_role
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/configlambda/lambarole/Resource
+  configlambdaSingletonD06A0CF5:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: >+
+          var AWS = require('aws-sdk');
+
+
+          exports.handler = function(event) {
+            console.log("request:", JSON.stringify(event, undefined, 2));
+
+              var s3 = new AWS.S3({apiVersion: '2006-03-01'});
+              var resource = event['detail']['requestParameters']['evaluations'];
+              console.log("evaluations:", JSON.stringify(resource, null, 2));
+
+              
+
+            
+          for (var i = 0, len = resource.length; i < len; i++) {
+            if (resource[i]["complianceType"] == "NON_COMPLIANT")
+            {
+                console.log(resource[i]["complianceResourceId"]);
+                var params = {
+                  Bucket: resource[i]["complianceResourceId"]
+                };
+
+                s3.deleteBucketPolicy(params, function(err, data) {
+                  if (err) console.log(err, err.stack); // an error occurred
+                  else     console.log(data);           // successful response
+                });
+            }
+          }
+
+
+
+          };
+
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - configlambdalambarole6B9C9D53
+          - Arn
+      Runtime: nodejs8.10
+      Timeout: 300
+    DependsOn:
+      - configlambdalambarole6B9C9D53
+    Metadata:
+      aws:cdk:path: AwsconfigLabStack/configlambda/Singleton/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=0.34.0,@aws-cdk/assets=0.34.0,@aws-cdk/aws-autoscaling=0.34.0,@aws-cdk/aws-autoscaling-common=0.34.0,@aws-cdk/aws-cloudwatch=0.34.0,@aws-cdk/aws-ec2=0.34.0,@aws-cdk/aws-elasticloadbalancingv2=0.34.0,@aws-cdk/aws-events=0.34.0,@aws-cdk/aws-iam=0.34.0,@aws-cdk/aws-kms=0.34.0,@aws-cdk/aws-lambda=0.34.0,@aws-cdk/aws-s3=0.34.0,@aws-cdk/aws-sqs=0.34.0,@aws-cdk/cdk=0.34.0,@aws-cdk/cx-api=0.34.0,@aws-cdk/region-info=0.34.0,jsii-runtime=node.js/v11.3.0
+
