@@ -42,7 +42,6 @@ export class ec2fleet extends cdk.Construct {
         minCapacity: 3,
         role: ec2role,
         updateType: UpdateType.RollingUpdate
-        
       });
       
       let userData: string = "sudo yum update -y \n"
@@ -67,6 +66,7 @@ export class ec2fleet extends cdk.Construct {
         + "export PORT=80\n"
         + "forever start /home/ec2-user/node-website/app.js"
       asg.addUserData(userData2);
+      
 
       const lb = new elbv2.ApplicationLoadBalancer(this, 'LB', {
         vpc,
