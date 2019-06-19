@@ -1,5 +1,6 @@
 import cdk = require('@aws-cdk/cdk');
 import s3 = require('@aws-cdk/aws-s3');
+import iam = require('@aws-cdk/aws-iam')
 
 
 
@@ -17,11 +18,11 @@ export class s3bucket extends cdk.Construct {
         
         
     });
-const grant = bucket1.grantPublicAccess();
-grant.resourceStatement!.addCondition('IpAddress', { "aws:SourceIp" : "54.240.143.0/24"});
+    const grant = bucket1.grantPublicAccess();
+    grant.resourceStatement!.addCondition('IpAddress', { "aws:SourceIp" : "54.240.143.0/24"});
 
-
-
+    const bucket2 = new s3.Bucket(this, 'Bucket2');
+    bucket2.grantReadWrite(new iam.Anyone);
 
   }
 }

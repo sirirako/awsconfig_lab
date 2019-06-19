@@ -5,6 +5,7 @@ import elb = require('@aws-cdk/aws-elasticloadbalancing');
 import s3 = require('@aws-cdk/aws-s3');
 import {s3bucket} from './awsconfig_lab-s3-stack';
 import {ec2fleet} from './awsconfig_lab-ec2-stack';
+import {lambdaS3Remediate} from './awsconfig_lab-lambda-stack'
 
 export class AwsconfigLabStack extends cdk.Stack {
 
@@ -20,8 +21,9 @@ export class AwsconfigLabStack extends cdk.Stack {
     
     const ec2 = new ec2fleet(this, 'ec2fleet');
     
+    const lambda = new lambdaS3Remediate(this, 'configlambda')
     
-    
+
     
     
   }
