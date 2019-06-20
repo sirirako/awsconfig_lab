@@ -29,7 +29,7 @@ In this session learn how to build a solution that will continuously evaluate yo
 2. Enter the Topic Name then click **Create Topic**. Take note of SNS topic ARN.
 3. **Optional** Click **Create subscription**, select *Email* for Protocol and enter an email address for Endpoint. You will receive and email with an instruction to confirm the subscription.
 
-![](../master/images/awsconfig_sns.png)
+![AWS Config Rule](../master/images/awsconfig_s3bucket.png)
 
 ### Scenario I: S3 Public Read access rule
 > In this section, we will create a Config rule to detect S3 Bucket with Public Read access permission and manually correct its configuration.
