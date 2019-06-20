@@ -29,18 +29,21 @@ In this session learn how to build a solution that will continuously evaluate yo
 2. Enter the Topic Name then click **Create Topic**. Take note of SNS topic ARN.
 3. **Optional** Click **Create subscription**, select *Email* for Protocol and enter an email address for Endpoint. You will receive and email with an instruction to confirm the subscription.
 
-![AWS Config Rule](../master/images/awsconfig_s3bucket.png)
+![AWS Config Rule](../master/images/awsconfig_SNS.png)
 
 ### Scenario I: S3 Public Read access rule
-> In this section, we will create a Config rule to detect S3 Bucket with Public Read access permission and manually correct its configuration.
+> In this section, we will create a Config rule to detect S3 Bucket with Public Read access permission and manually correct its configuration. 
    **s3-bucket-public-read-prohibited** Checks that your Amazon S3 buckets do not allow public read access. The rule checks the Block Public Access settings, the bucket policy, and the bucket access control list (ACL).
 1. Go to AWS Config Console and click *Rule* from the left menu. Click *+ Add Rule*. 
 2. In AWS Config rules page, Search and select *s3-bucket-public-read-prohibited*. Leave the settings in **Trigger** section with default value.
 3. In **Choose remediation action** section, select AWS-PubishSNSNotification. You need to provide SNS TopicArn from the previous section and Message. 
 4. Click Save. Wait a few minutes for the rule to apply. Examine the compliance and non-compliance S3 resource.
-   There is one bucket that has Public Read permission.  Let's fix it.
-5. This bucket will only be accessible from a specific network address. Go S3 console and search for this bucket.
-6. Under Permission Tab, Bucket Policy, replace the existing policy with the following policy and click **Save**
+   There is two bucket that has Public Read permission.  Let's fix one of them manually.
+
+![AWS Config Rule](../master/images/awsconfig_readrulenoncompliance.png)
+
+5. Under Noncompliant status, click awsconfig-configbucket1bucket1xxxxxxx. We will ensure that this bucket will only be accessible from a specific network address. Click **Manage resource** button which will take you to S3 console.
+6. Under Permission Tab, Bucket Policy, replace the existing policy with the following policy. Replace **Resources**'s value with your S3 ARN and click **Save**. Alternatively, add the Condition value below to the existing Bucket Policy.
 
 ```json
 {
@@ -50,7 +53,7 @@ In this session learn how to build a solution that will continuously evaluate yo
             "Effect": "Allow",
             "Principal": "*",
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::awsconfiglabstack-configbucket1bucket1d0a3ae24-173fadb7kccfj/*",
+            "Resource": "arn:aws:s3:::awsconfiglabstack-configbucket1bucket1xxxxxxxxxxxxx/*",
             "Condition": {
                 "IpAddress": {
                     "aws:SourceIp": "54.240.143.0/24"
@@ -60,7 +63,10 @@ In this session learn how to build a solution that will continuously evaluate yo
     ]
 }
 ```
-7. Return to AWS Config console, *s3-bucket-public-read-prohibited* Rule then click **Re-evaluate**. 
+7. Return to AWS Config console, *s3-bucket-public-read-prohibited* Rule then click **Re-evaluate**. It will take a few minutes for the rule to detect the change. Now there is only one bucket that is noncompliant.
+
+![AWS Config Rule](../master/images/awsconfig_readrulenoncompliance2.png)
+
 8. Select S3 bucket resource. Click **Configuration timeline** to see the configuration change history. Click **Compliance timeline** to see the Compliance history for this resource. 
 
 ![AWS Config Rule](../master/images/awsconfig_s3bucket.png)
@@ -96,9 +102,10 @@ In this session learn how to build a solution that will continuously evaluate yo
 #### Scenario II: Detecting S3 Public Read/Write access and remediate it with CloudWatch Event and Lambda Function
 > In this section, we continue to use AWS Config Rule to detect S3 Public Read/Write Acess configuration. We will use CloudWatch Event and Lambda Function to automate the remediation.
 1. Go to AWS Config Console and click *Rule* from the left menu
-2. Click *+ Add Rule*, search and select s3-bucket-public-write-prohibited. Leave everything with default value in **Trigger** section.
+2. Click *+ Add Rule*, search and select *s3-bucket-public-write-prohibited*. Leave everything with default value in **Trigger** section.
 3. In **Choose remediation action** section, select AWS-PubishSNSNotification and provide SNS TopicArn and Message.
 4. Click Save. Wait a few minutes for the rule to apply. Examine the compliance and non-compliance S3 resource. Go to the non-compliance S3 Bucket and see why it is opened to the world. **Hint** Take a look at its Bucket Policy.
+   Next, we are going to use AWS CloudWatch event and AWS Lambda to automatically remediate the noncompliant.
 5. Go to AWS CloudWatch console. On the left menu, click Events.
 6. Click **Create rule** button to creat a new rule. On Step 1: Create rule, under Event Source, select *Event Pattern* radio button. In the dropdown, select *Build cutomer event pattern*. Enter the following json text.
 ```json
@@ -127,7 +134,7 @@ In this session learn how to build a solution that will continuously evaluate yo
 
 ![CloudWatch Event](../master/images/awsconfig_CWEvent.png)
 
-7. Under **Step 2 : Configure rule details**, Rule definition, enter the rule name. Click Create rule.
+7. Under **Step 2 : Configure rule details**, Rule definition, enter the rule name. Click **Create rule**.
 8. Go to AWS Lambda Console, search and select the Lambda function in the earlier step. You can see that this function is triggered by CloudWatch Events.
 
 ![CloudWatch Event](../master/images/awsconfig_lambda.png)
