@@ -164,7 +164,7 @@ for (var i = 0, len = resource.length; i < len; i++) {
 1. In the AWS Management Console, go to the AWS Systems Manager console and choose Managed Instances on the left navigation pane. This should list all EC2 instances or on-premises managed instances in your account. 
 2. Click **Setup Inventory** and select the EC2 instance you want to collect inventory from. In this exercise, select *Specifying a tag* and enter Name for Tag key and AwsconfigLabStack/ec2fleet/ASG* for Tag value.
 
-!(../master/images/awsconfig_inventorytarget.png)
+![](../master/images/awsconfig_inventorytarget.png)
 
 3. Click Setup Inventory to complete the action. Verify that the instance has collected an inventory of applications installed on the instance. 
 
