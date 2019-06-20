@@ -12,6 +12,8 @@ In this session learn how to build a solution that will continuously evaluate yo
 1. Go to CloudFormation Console, and click Create stack. For **Prerequisite - Preapare template**, select *Template is ready*.
 2. Download the template from [here](https://raw.githubusercontent.com/sirirako/awsconfig_lab/master/templates/awsconfig_lab.json) to your machine.
 3. Under Specify template, select *Upload a template file* and click *Choose file* button and select the Cloud Formation template downloaded from the previous step.
+4. Enter Stack name. Keep the rest at the default value and click **Next**. 
+5. On the Review Test step, in the Capabilities section, check the check box *I acknowledge that AWS CloudFormation might create IAM resources with custom names.* and complete the Stack creation.
 
 ### Enable AWS Config to track configuration changes
 > Before you can use AWS Config to detect In this section, we will enable AWS Config.
@@ -19,15 +21,23 @@ In this session learn how to build a solution that will continuously evaluate yo
 2. In the Settings page, under Resource types to record, select *Record all resources supported in this region* checkbox. 
 3. Under Amazon S3 bucket, select *Create a bucket*.
 4. Under Amazon SNS topic, check the box for *Stream configuration changes and notifications to an Amazon SNS topic*, and then select the radio button,  *Create a topic*.
-5. Under AWS Config role, choose Create a role (unless you already have a role you want to use). 
-5. If this is the first time using AWS Config, Click Next to Create Rule and follow the next section. Otherwise, click **Save** and follow the next section.
-### Set up AWS Config rules
-#### Scenario I: S3 Public Read access rule
+5. Under AWS Config role, choose Create *AWS Config service-linkded role.* (unless you already have a role you want to use). 
+5. If this is the first time using AWS Config, Click **Next** to Create Rule. Click **Skip** to go to Review page. Click **Confirm**
+
+### Create another SNS Topic for Config Rule violation notification.
+1. In another browser tab, go to SNS Console. Click **Topics** in the left menu and click **Create topic**.
+2. Enter the Topic Name then click **Create Topic**. Take note of SNS topic ARN.
+
+![AWS Config Rule](../master/images/awsconfig_sns.png)
+
+3. [Optional] Click **Create subscription**, select *Email* for Protocol and enter an email address for Endpoint. You will receive and email with an instruction to confirm the subscription.
+
+### Scenario I: S3 Public Read access rule
 > In this section, we will create a Config rule to detect S3 Bucket with Public Read access permission and manually correct its configuration.
    **s3-bucket-public-read-prohibited** Checks that your Amazon S3 buckets do not allow public read access. The rule checks the Block Public Access settings, the bucket policy, and the bucket access control list (ACL).
-1. Go to AWS Config Console and click *Rule* from the left menu. (Skip this step if this is the first time using AWS Config.)
-2. Click *+ Add Rule*, search and select s3-bucket-public-read-prohibited. Leave everything with default value in **Trigger** section.
-3. In **Choose remediation action** section, select AWS-PubishSNSNotification. You need to provide SNS TopicArn and Message. In another tab, go to SNS 
+1. Go to AWS Config Console and click *Rule* from the left menu. Click *+ Add Rule*. 
+2. In AWS Config rules page, Search and select *s3-bucket-public-read-prohibited*. Leave the settings in **Trigger** section with default value.
+3. In **Choose remediation action** section, select AWS-PubishSNSNotification. You need to provide SNS TopicArn from the previous section and Message. 
 4. Click Save. Wait a few minutes for the rule to apply. Examine the compliance and non-compliance S3 resource.
    There is one bucket that has Public Read permission.  Let's fix it.
 5. This bucket will only be accessible from a specific network address. Go S3 console and search for this bucket.
@@ -168,15 +178,15 @@ for (var i = 0, len = resource.length; i < len; i++) {
 
 3. Click Setup Inventory to complete the action. Verify that the instance has collected an inventory of applications installed on the instance. 
 
-!(../master/images/awsconfig_applicationinventory.png)
+![](../master/images/awsconfig_applicationinventory.png)
 
 4. On the AWS Systems Manager console, choose Managed Instances, and then choose Edit AWS Config recording for the EC2 instance. It will talk you to AWS Config Console, under Settings.
 
-!(../master/images/awsconfig_editconfig.png)
+![](../master/images/awsconfig_editconfig.png)
 
 5. Under Settings, click **Turn on** button to enable the Configuration Recording.
 
-!(../master/images/awsconfig_turnonrecording.png)
+![](../master/images/awsconfig_turnonrecording.png)
 
 6. Let's install Java on one of these managed instances. Go to System Manager Console, Inventory.
 7. Note one of the Instance ID from the managed instances list.
@@ -198,22 +208,22 @@ java -version
 14. Click Inventory tab, search for Name : Bgin with : j
 
 
-!(../master/images/awsconfig_inventoryjava.png)
+![](../master/images/awsconfig_inventoryjava.png)
 
 15. Go to Inventory and schroll down to the Corresponding managed instances. At the instance that we installed JRE 1.8, click the link to AWS Config. Examine the Configurtion timeline, the "Changes" on the latest one. It will take you to the detail what the changes were.
 
-!(../master/images/awsconfig_inventorytimeline.png)
+![](../master/images/awsconfig_inventorytimeline.png)
 
-!(../master/images/awsconfig_javainstall.png)
+![](../master/images/awsconfig_javainstall.png)
 
 16. Let's apply AWS Config rule to detect the prohibited or blacklisted applications. Go to AWS Config console and click Rules.
 17. Click Add rule and search and select *ec2-managedinstance-applications-blacklisted*. Under Rule parameters, enter "java-1.7.0-openjdk' as the value for the applicationNames key as the application to be prohibited.
 
-!(../master/images/awsconfig_applicationrule.png)
+![](../master/images/awsconfig_applicationrule.png)
 
 18. For remediation action, choose AWS-PublishSNSNotification and provide TopicArn and Message Value. You can use the same configuration as in Scenario I. Click **Save**. The rule will start to apply immediately. Wait until it complete and examine the result.
 
-!(../master/images/awsconfig_appblacklistresult.png)
+![](../master/images/awsconfig_appblacklistresult.png)
 
 ### Challenge
 1. Fix the compliance error.

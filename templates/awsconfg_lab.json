@@ -12,9 +12,6 @@ Resources:
       PolicyDocument:
         Statement:
           - Action: s3:GetObject
-            Condition:
-              IpAddress:
-                aws:SourceIp: 54.240.143.0/24
             Effect: Allow
             Principal: "*"
             Resource:
