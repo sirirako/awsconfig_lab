@@ -28,7 +28,7 @@ In this session learn how to build a solution that will continuously evaluate yo
 1. In another browser tab, go to SNS Console. Click **Topics** in the left menu and click **Create topic**.
 2. Enter the Topic Name then click **Create Topic**. Take note of SNS topic ARN.
 
-![AWS Config Rule](../master/images/awsconfig_sns.png)
+![](../master/images/awsconfig_sns.png)
 
 3. [Optional] Click **Create subscription**, select *Email* for Protocol and enter an email address for Endpoint. You will receive and email with an instruction to confirm the subscription.
 
