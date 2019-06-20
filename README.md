@@ -121,7 +121,7 @@ In this session learn how to build a solution that will continuously evaluate yo
 7. Under **Step 2 : Configure rule details**, Rule definition, enter the rule name. Click Create rule.
 8. Go to AWS Lambda Console, search and select the Lambda function in the earlier step. You can see that this function is triggered by CloudWatch Events.
 
-![CloudWatch Event](../master/images/awsconfig_Lambda.png)
+![CloudWatch Event](../master/images/awsconfig_lambda.png)
 
 9. Go to AWS Config Console and click s3-bucket-public-write-prohibited rule. Click **Re-evaluate** button to manually trigger the rule. 
 
@@ -162,5 +162,60 @@ for (var i = 0, len = resource.length; i < len; i++) {
 #### Scenario III, Detecting Blacklisted application with AWS System Manager
 > We will be using Inventory in AWS System Manager combine with AWS Config Rule to detect the unwanted application installed on EC2 instances.
 1. In the AWS Management Console, go to the AWS Systems Manager console and choose Managed Instances on the left navigation pane. This should list all EC2 instances or on-premises managed instances in your account. 
-2. Click **Setup Inventory** and select the EC2 instance you want to collect inventory from. In this exercise, select *Selecting all managed instances in this account*.
+2. Click **Setup Inventory** and select the EC2 instance you want to collect inventory from. In this exercise, select *Specifying a tag* and enter Name for Tag key and AwsconfigLabStack/ec2fleet/ASG* for Tag value.
+
+!(../master/images/awsconfig_inventorytarget.png)
+
 3. Click Setup Inventory to complete the action. Verify that the instance has collected an inventory of applications installed on the instance. 
+
+!(../master/images/awsconfig_applicationinventory.png)
+
+4. On the AWS Systems Manager console, choose Managed Instances, and then choose Edit AWS Config recording for the EC2 instance. It will talk you to AWS Config Console, under Settings.
+
+!(../master/images/awsconfig_editconfig.png)
+
+5. Under Settings, click **Turn on** button to enable the Configuration Recording.
+
+!(../master/images/awsconfig_turnonrecording.png)
+
+6. Let's install Java on one of these managed instances. Go to System Manager Console, Inventory.
+7. Note one of the Instance ID from the managed instances list.
+8. Go to Session Manager, and click **Start session**. Search and select the Instance ID from the previous step and click **Start Session**.
+9. In the prompt, enter these follow command.
+
+```bash
+sudo yum install java-1.8.0-openjdk-devel
+sudo alternatives --config java
+```
+10. Enter 2 to select JRE 1.8.  Confirm it by typing this command.
+
+```bash
+java -version
+```
+11. Wait for the next schedule but we can't. Let do it manually. Go to State Manager in System Manager console.
+12. Under Associations, select the assosication for the Inventory created earlier then click **Apply association now**.
+13. When it completes, in the resource tab, select the instance that we installed java 1.8.
+14. Click Inventory tab, search for Name : Bgin with : j
+
+
+!(../master/images/awsconfig_inventoryjava.png)
+
+15. Go to Inventory and schroll down to the Corresponding managed instances. At the instance that we installed JRE 1.8, click the link to AWS Config. Examine the Configurtion timeline, the "Changes" on the latest one. It will take you to the detail what the changes were.
+
+!(../master/images/awsconfig_inventorytimeline.png)
+
+!(../master/images/awsconfig_javainstall.png)
+
+16. Let's apply AWS Config rule to detect the prohibited or blacklisted applications. Go to AWS Config console and click Rules.
+17. Click Add rule and search and select *ec2-managedinstance-applications-blacklisted*. Under Rule parameters, enter "java-1.7.0-openjdk' as the value for the applicationNames key as the application to be prohibited.
+
+!(../master/images/awsconfig_applicationrule.png)
+
+18. For remediation action, choose AWS-PublishSNSNotification and provide TopicArn and Message Value. You can use the same configuration as in Scenario I. Click **Save**. The rule will start to apply immediately. Wait until it complete and examine the result.
+
+!(../master/images/awsconfig_appblacklistresult.png)
+
+### Challenge
+1. Fix the compliance error.
+2. Use AWS Config Dashbord to monitor the compliance. Keep it Green!!
+
