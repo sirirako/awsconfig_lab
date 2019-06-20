@@ -67,7 +67,7 @@ In this session learn how to build a solution that will continuously evaluate yo
 
 ![AWS Config Rule](../master/images/awsconfig_readrulenoncompliance2.png)
 
-8. Select S3 bucket resource. Click **Configuration timeline** to see the configuration change history. Click **Compliance timeline** to see the Compliance history for this resource. 
+8. Under Compliance status, select *Complaint* from the dropdown menu to filter the list. Select S3 bucket resource that we made Bucket Policy changed earlier. Click **Configuration timeline** to see the configuration change history. Click **Compliance timeline** to see the Compliance history for this resource. 
 
 ![AWS Config Rule](../master/images/awsconfig_s3bucket.png)
 
@@ -77,9 +77,9 @@ In this session learn how to build a solution that will continuously evaluate yo
 
    Let's prevent Public Acess Configuration
 
-9. Go to S3 console, S3 bucket. In **Permission** tab, delete existing Bukcet Policy.
-10. Click **Block public access**, click **Edit**. Select *Block all public access* and click Save.
-11. Now go back to Bucket Policy, enter the policy below which give Public Read Access to the world.
+9. Click *Manage Resource* to Go to S3 console, S3 bucket. In **Permission** tab, click Bucket Policy and click delete to remove the existing Bukcet Policy.
+10. Click **Block public access**, click **Edit**. Select *Block all public access* and click Save amd confirm the change.
+11. Now go back to Bucket Policy, enter the policy below which give Public Read Access to the world. Replace the *Resource*'s value with your S3 Bucket Arn.
 
 ```json
 {
@@ -89,7 +89,7 @@ In this session learn how to build a solution that will continuously evaluate yo
             "Effect": "Allow",
             "Principal": "*",
             "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::awsconfiglabstack-configbucket1bucket1d0a3ae24-173fadb7kccfj/*"
+            "Resource": "arn:aws:s3:::awsconfiglabstack-configbucket1bucket1xxxxxxxxxxx/*"
         }
     ]
 }
@@ -106,7 +106,7 @@ In this session learn how to build a solution that will continuously evaluate yo
 3. In **Choose remediation action** section, select AWS-PubishSNSNotification and provide SNS TopicArn and Message.
 4. Click Save. Wait a few minutes for the rule to apply. Examine the compliance and non-compliance S3 resource. Go to the non-compliance S3 Bucket and see why it is opened to the world. **Hint** Take a look at its Bucket Policy.
    Next, we are going to use AWS CloudWatch event and AWS Lambda to automatically remediate the noncompliant.
-5. Go to AWS CloudWatch console. On the left menu, click Events.
+5. Go to AWS CloudWatch console. On the left menu, click Rules under Events.
 6. Click **Create rule** button to creat a new rule. On Step 1: Create rule, under Event Source, select *Event Pattern* radio button. In the dropdown, select *Build cutomer event pattern*. Enter the following json text.
 ```json
 {
