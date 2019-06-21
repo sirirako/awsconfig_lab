@@ -99,6 +99,55 @@ In this session learn how to build a solution that will continuously evaluate yo
 
 12. Now try the policy in step 6. You are able to add policy that does not give Public Read Access to the world
 
+### Let's use System Manager Document to remediate the noncompliant.
+
+13. Go back to S3 bucket in **Permission** tab, click Bucket Policy. Click **Block public access**, click **Edit**. uncheck *Block all public access* and click Save amd confirm the change. For Bucket Policy, remove the Conditon for IP Address from the policy. Now this bucket has Read access and noncompliant.
+14. Go to System Manager Console, click Documents under Shared Resources on the left menu.
+15. Click Create Document, type **Name:** *My-DisableS3ReadAccess* and select **Document type:** *Automation document*
+16. Under Content, select YAML and copy the code below. Click Create document.
+
+```yaml
+---
+description: Disable S3-Bucket's public WriteRead access via private ACL
+schemaVersion: "0.3"
+assumeRole: "{{ AutomationAssumeRole }}"
+parameters:
+  S3BucketName:
+    type: String
+    description: (Required) S3 Bucket subject to access restriction
+  AutomationAssumeRole:
+    type: String
+    description: (Optional) The ARN of the role that allows Automation to perform the actions on your behalf.
+    default: ""
+mainSteps:
+- name: DisableS3BucketPublicReadWrite
+  action: aws:executeAwsApi
+  inputs:
+    Service: s3
+    Api:  PutPublicAccessBlock
+    Bucket: "{{S3BucketName}}"
+    PublicAccessBlockConfiguration: 
+      BlockPublicAcls: true
+      IgnorePublicAcls: true
+      BlockPublicPolicy: true
+      RestrictPublicBuckets: true
+  isEnd: true
+...
+```
+17. Go back to AWS Config console, select the radio button for rule *s3-bucket-public-read-prohibited* and click Manage remediation button.
+18. Click Delete remediation action to delete the existing one (AWS-PubishSNSNotification).
+19. For Remediation action dropdown, finde the System Mananger Document created earlier, *My-DisableS3Access*.
+20. For Resource ID parameter, select S3BucketName. Click **Save**.
+
+![](../master/images/awsconfig_ssmremediation.png)
+
+21. Re-evaluate the rule and you should see this bucket has Noncompliant status.
+22. Select the resource and click Remediate. When complete, click *Re-evaluate the rule.
+
+![](../master/images/awsconfig_remediate.png)
+
+23. Go back to the S3 Bucket and go to Permissions tab. Check the **Block public access** settings.
+
 #### Scenario II: Detecting S3 Public Read/Write access and remediate it with CloudWatch Event and Lambda Function
 > In this section, we continue to use AWS Config Rule to detect S3 Public Read/Write Acess configuration. We will use CloudWatch Event and Lambda Function to automate the remediation.
 1. Go to AWS Config Console and click *Rule* from the left menu

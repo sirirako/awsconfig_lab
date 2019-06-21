@@ -13,4 +13,4 @@ const stack = new AwsconfigLabStack(app, 'AwsconfigLabStack',
 }
 );
 
-//stack.node.applyAspect(new cdk.Tag('Stack','AWSConfig-Lab'))
+stack.node.applyAspect(new cdk.Tag('Stack','AWSConfig-Lab'))
